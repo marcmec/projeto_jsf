@@ -1,0 +1,202 @@
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+    <h:outputStylesheet library="css" name="style.css"/>
+
+    <title>Vrumm Express</title>
+
+    <script>
+        PrimeFaces.locales['pt_BR'] = {
+            closeText: 'Fechar',
+            prevText: 'Anterior',
+            nextText: 'Próximo',
+            currentText: 'Começo',
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+            dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+            weekHeader: 'Semana',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: '',
+            timeOnlyTitle: 'Só Horas',
+            timeText: 'Tempo',
+            hourText: 'Hora',
+            minuteText: 'Minuto',
+            secondText: 'Segundo',
+            currentText: 'Data Atual',
+            ampm: false,
+            month: 'Mês',
+            week: 'Semana',
+            day: 'Dia',
+            allDayText: 'Todo Dia'
+        };
+    </script>
+</h:head>
+<h:body>
+
+    <aside class="navegacao-site">
+
+        <h:form id="formLogo">
+
+            <div class="logo">
+                <h:commandLink action="#{pageUtil.redirecionarParaPaginaPrincipal()}">
+                    <p:graphicImage value="/resources/imgs/logo_1.png"/>
+                </h:commandLink>
+            </div>
+        </h:form>
+
+        <br/>
+
+        <h:form id="formLogin">
+
+            <p:growl id="msg" showDetail="true"/>
+
+            <div class="login" align="center">
+                <h:outputText value="Bem Vindo(a), " style="color: white;"/>
+                <h:outputText
+                        value="#{!usuarioMB.verificaSeExisteSessaoAtiva() ? 'Visitante' : usuarioMB.retornaNomeUsuarioLogado()}"
+                        style="font-weight: bold; color: white"/>
+                <br/><br/>
+                <b:commandButton type="button" value="Entrar" styleClass="btn-custom"
+                                 onclick="PF('dlgLogin').show()" style="width: 70%;"
+                                 update="formLogin" ajax="true"
+                                 rendered="#{!usuarioMB.verificaSeExisteSessaoAtiva()}"/>
+
+                <b:commandButton value="Sair" ajax="true" look="info" style="width: 70%;" styleClass="btn-custom"
+                                 action="#{usuarioMB.deslogar()}" update="@this"
+                                 rendered="#{usuarioMB.verificaSeExisteSessaoAtiva()}"/>
+            </div>
+        </h:form>
+
+        <br/><br/>
+
+        <h:form>
+            <nav class="menu-nav">
+                <ul>
+                    <li>
+                        <h:commandLink action="#{pageUtil.redirecionarParaPaginaPrincipal()}" value="Início"/>
+                    </li>
+
+                    <li>
+                        <h:commandLink action="#{pageUtil.redirecionarParaPage('pages/publico/rastrear')}"
+                                       value="Rastrear"/>
+                    </li>
+
+                    <li>
+                        <h:commandLink action="#{pageUtil.redirecionarParaPage('pages/publico/servicos')}"
+                                       value="Serviços"/>
+                    </li>
+
+                    <li>
+                        <h:commandLink action="#{pageUtil.redirecionarParaPage('pages/publico/contato')}"
+                                       value="Contato"/>
+                    </li>
+
+                    <c:if test="#{usuarioMB.verificaSeExisteSessaoAtiva()}">
+                        <li class="item">
+                            <h:commandLink
+                                    action="#{pageUtil.redirecionarParaPage('pages/administrador/usuarios')}"
+                                    value="Administração"/>
+                        </li>
+                    </c:if>
+                </ul>
+            </nav>
+        </h:form>
+
+        <ul class="footer icones-redes-sociais">
+            <li>
+                <a class="github" href="https://github.com/ewerton255" target="_blank">
+                    <p:graphicImage value="/resources/imgs/github.png"/>
+                </a>
+            </li>
+            <li>
+                <a class="twitter" href="#">
+                    <p:graphicImage value="/resources/imgs/twitter.png"/>
+                </a>
+            </li>
+            <li>
+                <a class="linkedin" href="#">
+                    <p:graphicImage value="/resources/imgs/linkedin.png"/>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="foto">
+        <div class="container">
+            <ui:insert name="conteudo"></ui:insert>
+        </div>
+    </main>
+
+    <p:ajaxStatus onstart="PF('dlgLoading').show();" oncomplete="PF('dlgLoading').hide();"/>
+
+    <ui:insert name="dlgLogin">
+        <ui:include src="/template/dialogs/dlgLogin.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgLoading">
+        <ui:include src="/template/dialogs/dlgLoading.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgEditUsuario">
+        <ui:include src="/template/dialogs/usuario/dlgEditUsuario.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgDelUsuario">
+        <ui:include src="/template/dialogs/usuario/dlgDelUsuario.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgCadUsuario">
+        <ui:include src="/template/dialogs/usuario/dlgCadUsuario.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgCadPacote">
+        <ui:include src="/template/dialogs/pacote/dlgCadPacote.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgHistoricoPacote">
+        <ui:include src="/template/dialogs/pacote/dlgHistoricoPacote.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgCadAtualizacao">
+        <ui:include src="/template/dialogs/pacote/dlgCadAtualizacao.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgCadEmpresa">
+        <ui:include src="/template/dialogs/Empresa/dlgCadEmpresa.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgStatusPacote">
+        <ui:include src="/template/dialogs/pacote/dlgStatusPacote.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgCadStatus">
+        <ui:include src="/template/dialogs/pacote/dlgCadStatus.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgEditarStatus">
+        <ui:include src="/template/dialogs/pacote/dlgEditarStatus.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgExcluirStatus">
+        <ui:include src="/template/dialogs/pacote/dlgExcluirStatus.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgExcluirAtualizacao">
+        <ui:include src="/template/dialogs/pacote/dlgExcluirAtualizacao.xhtml"/>
+    </ui:insert>
+
+    <ui:insert name="dlgEditarAtualizacao">
+        <ui:include src="/template/dialogs/pacote/dlgEditarAtualizacao.xhtml"/>
+    </ui:insert>
+</h:body>
+</html>

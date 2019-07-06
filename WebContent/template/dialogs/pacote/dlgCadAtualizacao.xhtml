@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+<body>
+	<p:dialog widgetVar="dlgCadAtualizacao" header="Cadastrar Status"
+		closable="false" resizable="false" modal="true" draggable="false"
+		showEffect="fade" hideEffect="fade">
+		<div align="center">
+			<h:form id="formCadAtualizacao">
+				<p:growl id="msgCadAtualizacao" showDetail="true" />
+				<p:panelGrid columns="2" styleClass="semBorda">
+					<p:outputLabel value="Pacote:" />
+					<p:outputLabel
+						value="#{pacoteMB.pacoteSelecionado.codigoRastreio}" />
+					<p:outputLabel value="Status:" />
+					<p:selectOneMenu
+						value="#{pacoteMB.novaAtualizacao.status.id}"
+						required="true" requiredMessage="Selecione o status">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione o status" />
+						<f:selectItems
+							value="#{statusPacoteMB.retornaListaDeStatus()}"
+							var="status" itemValue="#{status.id}"
+							itemLabel="#{status.descricao}" />
+						<p:ajax event="change" update="formCadAtualizacao"
+							listener="#{pacoteMB.renderizaLocalizacao()}" />
+					</p:selectOneMenu>
+					<p:outputLabel value="Local:"
+						rendered="#{pacoteMB.renderizaLocalizacao()}" />
+					<p:inputText style="width: 100%;"
+						value="#{pacoteMB.novaAtualizacao.localizacao}"
+						required="true" requiredMessage="Insira o local da atualização"
+						rendered="#{pacoteMB.renderizaLocalizacao()}" />
+					<p:outputLabel value="Observação:" />
+					<p:inputTextarea style="width: 100%;"
+						value="#{pacoteMB.novaAtualizacao.observacao}" />
+				</p:panelGrid>
+				<br />
+				<div align="center">
+					<p:panelGrid columns="2" styleClass="semBorda">
+						<b:commandButton ajax="true"
+							actionListener="#{pacoteMB.cadastrarNovaAtualizacao()}"
+							style="background: #0099ff; color:white;" value="Salvar"
+							update="msgCadAtualizacao" />
+						<b:button onclick="PF('dlgCadAtualizacao').hide();" look="danger"
+							value="Fechar" />
+					</p:panelGrid>
+				</div>
+			</h:form>
+		</div>
+	</p:dialog>
+</body>
+</html>

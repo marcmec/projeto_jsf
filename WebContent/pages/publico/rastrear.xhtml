@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
+
+<body>
+<f:metadata>
+    <f:viewAction action="#{pacoteMB.carregaDadosPageRastrear()}"/>
+</f:metadata>
+<ui:composition template="/template/templateGeral.xhtml">
+    <ui:define name="conteudo">
+        <h:form id="formRastreio">
+            <p:growl showDetail="true" id="msgRastreio"/>
+            <br/>
+            <div align="center">
+                <p:outputLabel value="Rastrear Pacote" style="font-size: 1.7em;"/>
+            </div>
+            <br/><br/>
+            <div align="center">
+                <p:panelGrid columns="2" styleClass="semBorda">
+
+                    <b:inputText maxlength="13" style="margin-top: 7%;"
+                                 value="#{pacoteMB.pacoteParaBuscar.codigoRastreio}"
+                                 required="true" requiredMessage="Informe o código de rastreio"/>
+
+                    <b:commandButton title="Buscar" ajax="true" update="formRastreio"
+                                     action="#{pacoteMB.buscarPacote()}">
+                        <b:iconAwesome name="search"/>
+                    </b:commandButton>
+
+                </p:panelGrid>
+
+                <span>O código é formado por 4 letras e 9 números, exemplo: </span><span
+                    style="font-weight: bold;">LB123456789SE</span>
+
+                <br/><br/>
+
+                <p:graphicImage value="/resources/imgs/pacote_recebido.png"
+                                rendered="#{pacoteMB.retornaStatusEncomenda() eq 'RECEBIDO'}"/>
+                <p:graphicImage value="/resources/imgs/pacote_em_transito.png"
+                                rendered="#{pacoteMB.retornaStatusEncomenda() eq 'TRANSITO'}"/>
+                <p:graphicImage value="/resources/imgs/pacote_entregue.png"
+                                rendered="#{pacoteMB.retornaStatusEncomenda() eq 'ENTREGUE'}"/>
+
+                <br/>
+
+                <p:outputLabel value="Pacote Recebido"
+                               rendered="#{pacoteMB.retornaStatusEncomenda() eq 'RECEBIDO'}"
+                               styleClass="status-pacote"/>
+                <p:outputLabel value="Em Trânsito" rendered="#{pacoteMB.retornaStatusEncomenda() eq 'TRANSITO'}"
+                               styleClass="status-pacote"/>
+                <p:outputLabel value="Entregue ao destinatário"
+                               rendered="#{pacoteMB.retornaStatusEncomenda() eq 'ENTREGUE'}"
+                               styleClass="status-pacote"/>
+
+                <br/><br/>
+
+                <p:dataTable emptyMessage="Nenhum resultado encontrado" style="width: 50%;" id="tbResultadoRastreio"
+                             var="historico"
+                             value="#{pacoteMB.listaHistoricoRastreio}"
+                             rendered="#{pacoteMB.listaHistoricoRastreio.size() > 0}">
+                    <p:column headerText="Data/Hora atualização">
+                        <div align="center">
+                            <h:outputText value="#{historico.dataHoraAtualizacaoFormatados}"/>
+                        </div>
+                    </p:column>
+
+                    <p:column headerText="Status">
+                        <div align="center">
+                            <h:outputText value="#{historico.status.descricao} #{historico.localizacao}"
+                                          style="color: #{historico.status.id eq 5 ? 'green' : 'black'};"/>
+                        </div>
+                    </p:column>
+
+                    <p:column headerText="Observação">
+                        <div align="center">
+                            <h:outputText value="#{historico.observacao}"/>
+                        </div>
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

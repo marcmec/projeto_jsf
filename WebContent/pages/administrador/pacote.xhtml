@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
+<body>
+	<ui:composition template="/pages/administrador/administracao.xhtml">
+		<ui:define name="page">
+			<h:form id="formListaPacotes">
+				<br/>
+				<div align="center">
+					<p:outputLabel value="Gerenciar pacotes" style="font-size: 1.7em;"/>
+				</div>
+				<p:commandButton value="Cadastrar" title="Cadastrar novo pacote" ajax="true" action="#{pacoteMB.abrirDialogCadastroPacote()}"/>
+				#{'  '}
+				<p:commandButton value="Status" title="Cadastrar, editar, excluir status" ajax="true" action="#{pacoteMB.abrirDlgStatusPacote()}"/>
+				<br/><br/>
+				<p:dataTable id="tbPacotes" value="#{pacoteMB.retornaListaDePacotes()}" var="pacote" paginator="true"
+                             emptyMessage="Nenhum pacote encontrado" paginatorPosition="bottom">
+					
+					<p:column headerText="Código" filterBy="#{pacote.codigoRastreio}">
+						<div align="center">
+							<h:outputText value="#{pacote.codigoRastreio}" />
+						</div>
+					</p:column>
+					
+					<p:column headerText="Descrição">
+						<div align="center">
+							<h:outputText value="#{pacote.descricao}" />
+						</div>
+					</p:column>
+					
+					<p:column headerText="Peso">
+						<div align="center">
+							<h:outputText value="#{pacote.peso} Kg" />
+						</div>
+					</p:column>
+					
+					<p:column headerText="CPF/CNPJ destinatário" filterBy="#{pacote.cpfCnpjDestinatario}">
+						<div align="center">
+							<h:outputText value="#{pacote.cpfCnpjDestinatario}"/>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Frete">
+						<div align="center">
+							<h:outputText value="#{pacote.tipoFrete.tipo eq 'EX' ? 'Express' : 'Standard'}" />
+						</div>
+					</p:column>
+					
+					<p:column headerText="Data postagem">
+						<div align="center">
+							<h:outputText value="#{pacote.dataPostado}">
+								<f:convertDateTime pattern="dd/MM/YYYY"/>
+							</h:outputText>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Previsão entrega">
+						<div align="center">
+							<h:outputText value="#{pacote.previsaoEntrega}">
+								<f:convertDateTime pattern="dd/MM/YYYY"/>
+							</h:outputText>
+						</div>
+					</p:column>
+					
+					<p:column headerText="Ações">
+						<div align="center">
+							<b:commandButton title="Adicionar atualização" style="border: none;" ajax="true" action="#{pacoteMB.abrirDialogCadastroAtualizacao(pacote)}">
+								<b:iconAwesome name="plus" style="color: #0099ff;"/>
+							</b:commandButton>
+							
+							<b:commandButton title="Visualizar Histórico de atualizações" style="border: none;" ajax="true" action="#{pacoteMB.abrirHistoricoDoPacote(pacote)}">
+								<b:iconAwesome name="list" style="color: #0099ff;"/>
+							</b:commandButton>
+						</div>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
